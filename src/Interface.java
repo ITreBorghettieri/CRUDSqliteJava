@@ -35,11 +35,14 @@ public class Interface extends JFrame {
         JMenu fileSaveMenu = new JMenu("Save as");
         fileSaveMenu.setMnemonic('S');
         fileSaveMenu.setIcon(UIManager.getIcon("FileView.floppyDriveIcon"));
-        //csv
+        //CSV
         JMenuItem csv = new JMenuItem("CSV");
-
+        //XLS
         JMenuItem xls = new JMenuItem("XLS");
+        //XLSX
         JMenuItem xlsx = new JMenuItem("XLSX");
+
+
 
         //Menu tablesMenu
         JMenu tablesMenu = new JMenu("Tabelle");
@@ -139,19 +142,23 @@ public class Interface extends JFrame {
 
         //Save
         //CSV
-        csv.addActionListener(actionEvent -> {
-            JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home") + "/Desktop");
-            int rc = fileChooser.showSaveDialog(null);
-            if(rc == JFileChooser.APPROVE_OPTION) {
-                table.setPath(fileChooser.getSelectedFile());
-                table.saveCSV();
-                editMenu.setEnabled(false);
-                tablesMenu.setEnabled(false);
-                fileSaveMenu.setEnabled(false);
-                JOptionPane.showMessageDialog(new JFrame(), "Salvato con successo!", "Istruzione eseguita correttamente", JOptionPane.PLAIN_MESSAGE);
+        csv.addActionListener(actionEvent ->{
+            if(table.getTables().size() > 0){
+                JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home") + "/Desktop");
+                int rc = fileChooser.showSaveDialog(null);
+                if(rc == JFileChooser.APPROVE_OPTION){
+                    table.setPath(fileChooser.getSelectedFile());
+                    table.saveCSV();
+                    editMenu.setEnabled(false);
+                    tablesMenu.setEnabled(false);
+                    fileSaveMenu.setEnabled(false);
+                    JOptionPane.showMessageDialog(new JFrame(), "Salvato con successo!", "Istruzione eseguita correttamente", JOptionPane.PLAIN_MESSAGE);
+                }
+            }else{
+                JOptionPane.showMessageDialog(new JFrame(), "Non hai aperto alcuna tabella!", "Errore", JOptionPane.ERROR_MESSAGE);
             }
         });
-
+        //XLS
         xls.addActionListener(actionEvent ->{
             if(table.getTables().size() > 0){
                 JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home") + "/Desktop");
@@ -163,21 +170,23 @@ public class Interface extends JFrame {
                     tablesMenu.setEnabled(false);
                     fileSaveMenu.setEnabled(false);
                     JOptionPane.showMessageDialog(new JFrame(), "Salvato con successo!", "Istruzione eseguita correttamente", JOptionPane.PLAIN_MESSAGE);
-
                 }
             }else{
                 JOptionPane.showMessageDialog(new JFrame(), "Non hai aperto alcuna tabella!", "Errore", JOptionPane.ERROR_MESSAGE);
             }
         });
-
+        //XLSX
         xlsx.addActionListener(actionEvent ->{
             if(table.getTables().size() > 0){
                 JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home") + "/Desktop");
                 int rc = fileChooser.showSaveDialog(null);
                 if(rc == JFileChooser.APPROVE_OPTION){
                     table.setPath(fileChooser.getSelectedFile());
-                    table.saveXLS();
-
+                    table.saveXLSX();
+                    editMenu.setEnabled(false);
+                    tablesMenu.setEnabled(false);
+                    fileSaveMenu.setEnabled(false);
+                    JOptionPane.showMessageDialog(new JFrame(), "Salvato con successo!", "Istruzione eseguita correttamente", JOptionPane.PLAIN_MESSAGE);
                 }
             }else{
                 JOptionPane.showMessageDialog(new JFrame(), "Non hai aperto alcuna tabella!", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -202,7 +211,5 @@ public class Interface extends JFrame {
                 table.writeTable();
             }
         });
-
-
     }
 }
