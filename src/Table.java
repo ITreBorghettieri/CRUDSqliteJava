@@ -5,6 +5,14 @@ import javax.swing.table.DefaultTableModel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import org.apache.poi.hssf.usermodel.HSSFAnchor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 public class Table extends JTable {
     private final DefaultTableModel currentTableModel = (DefaultTableModel) this.getModel();
     private File path = null;
@@ -157,6 +165,7 @@ public class Table extends JTable {
 
     public void saveCSV() {
         try {
+            System.out.println(this.getRowCount() + " " + this.getColumnCount());
             PrintWriter pw = new PrintWriter(this.getPath());
             for (int col = 0; col < this.getColumnCount(); col++) {
                 if(!this.getColumnName(col).equals("")) {
@@ -183,6 +192,65 @@ public class Table extends JTable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.clear();
+    }
+
+    public void saveXLS(){
+        try {
+            FileOutputStream outputStream = new FileOutputStream(this.getPath());
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            for (String tables: this.getTables()){
+                HSSFSheet currentSheet = workbook.createSheet(tables);
+
+                Row firstRow = currentSheet.createRow(0);
+                for(int col = 0; col < this.getColumnCount(); col++){
+                    Cell cell = firstRow.createCell(col);
+                    cell.setCellValue(this.getColumnName(col));
+                }
+                for(int row = 0; row < this.getRowCount(); row++){
+                    Row currentRow = currentSheet.createRow(row+1);
+                    for(int col = 0; col < this.getColumnCount(); col++){
+                        Cell cell = currentRow.createCell(col);
+                        cell.setCellValue((String)this.getValueAt(row, col));
+                    }
+                }
+            }
+            workbook.write(outputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.clear();
+    }
+
+    public void saveXLSX(){
+        try {
+            FileOutputStream outputStream = new FileOutputStream(this.getPath());
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            for (String tables: this.getTables()){
+                XSSFSheet currentSheet = workbook.createSheet(tables);
+
+                Row firstRow = currentSheet.createRow(0);
+                for(int col = 0; col < this.getColumnCount(); col++){
+                    Cell cell = firstRow.createCell(col);
+                    cell.setCellValue(this.getColumnName(col));
+                }
+                for(int row = 0; row < this.getRowCount(); row++){
+                    Row currentRow = currentSheet.createRow(row+1);
+                    for(int col = 0; col < this.getColumnCount(); col++){
+                        Cell cell = currentRow.createCell(col);
+                        cell.setCellValue((String)this.getValueAt(row, col));
+                    }
+                }
+            }
+            workbook.write(outputStream);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void createRecord(ArrayList<String> valueDB){
