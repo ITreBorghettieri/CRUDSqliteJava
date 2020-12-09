@@ -1,11 +1,9 @@
-import javax.swing.*;
 import java.sql.*;
 import java.io.*;
-import javax.swing.table.DefaultTableModel;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-
-import org.apache.poi.hssf.usermodel.HSSFAnchor;
+import java.nio.charset.StandardCharsets;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -165,7 +163,6 @@ public class Table extends JTable {
 
     public void saveCSV() {
         try {
-            System.out.println(this.getRowCount() + " " + this.getColumnCount());
             PrintWriter pw = new PrintWriter(this.getPath());
             for (int col = 0; col < this.getColumnCount(); col++) {
                 if(!this.getColumnName(col).equals("")) {
@@ -192,7 +189,6 @@ public class Table extends JTable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.clear();
     }
 
     public void saveXLS(){
@@ -216,8 +212,6 @@ public class Table extends JTable {
                 }
             }
             workbook.write(outputStream);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -245,18 +239,18 @@ public class Table extends JTable {
                 }
             }
             workbook.write(outputStream);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
+
     public void createRecord(ArrayList<String> valueDB){
         try {
             Connection connection = DriverManager.getConnection("jdbc:sqlite:" + this.getPath());
             StringBuilder query = new StringBuilder("INSERT INTO " + this.getCurrentTableName() + " (");
+            System.out.println(currentTableName);
 
             int fieldsNameLen = this.getFieldsName().size();
 
@@ -282,8 +276,8 @@ public class Table extends JTable {
             PreparedStatement preparedStatement = connection.prepareStatement(query.toString());
 
             index = 0;
-            for (String currentType : this.getFieldsType()) {
-                switch (currentType) {
+            for (String fieldType : this.getFieldsType()) {
+                switch (fieldType) {
                     case "INTEGER":
                         preparedStatement.setInt(index + 1, Integer.parseInt(valueDB.get(index)));
                         break;
@@ -304,10 +298,12 @@ public class Table extends JTable {
                         break;
 
                     default:
+                        JOptionPane.showMessageDialog(new JFrame(), ("Il campo " + getFieldsName().get(index) + " è di un tipo non supportato (" + fieldType + ")"), "Errore", JOptionPane.ERROR_MESSAGE);
                         return;
                 }
                 index++;
             }
+            System.out.println(query.toString());
             //query = "INSERT INTO table_name(field1, field2, field3) VALUES(?, ?, ?);"
             preparedStatement.executeUpdate();
             connection.close();
@@ -348,6 +344,7 @@ public class Table extends JTable {
                     break;
 
                 default:
+                    JOptionPane.showMessageDialog(new JFrame(), ("Il campo " + fieldName + " è di un tipo non supportato (" + fieldType + ")"), "Errore", JOptionPane.ERROR_MESSAGE);
                     return;
             }
             switch (primaryKeyType) {
@@ -371,6 +368,8 @@ public class Table extends JTable {
                     break;
 
                 default:
+                    JOptionPane.showMessageDialog(new JFrame(), ("La chiave primaria" + fieldName + " è di un tipo non supportato (" + fieldType + ")"), "Errore", JOptionPane.ERROR_MESSAGE);
+                    return;
             }
 
             preparedStatement.executeUpdate();
