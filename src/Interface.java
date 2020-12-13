@@ -43,6 +43,8 @@ public class Interface extends JFrame {
         JMenuItem xlsx = new JMenuItem("XLSX");
         //PDF
         JMenuItem pdf = new JMenuItem("PDF");
+        //JSON
+        JMenuItem json = new JMenuItem("JSON");
 
 
 
@@ -72,6 +74,7 @@ public class Interface extends JFrame {
         fileSaveMenu.add(xls);
         fileSaveMenu.add(xlsx);
         fileSaveMenu.add(pdf);
+        fileSaveMenu.add(json);
 
         fileMenu.add(fileSaveMenu);
 
@@ -202,6 +205,23 @@ public class Interface extends JFrame {
                 if(rc == JFileChooser.APPROVE_OPTION){
                     table.setPath(fileChooser.getSelectedFile());
                     table.savePDF();
+                    editMenu.setEnabled(false);
+                    tablesMenu.setEnabled(false);
+                    fileSaveMenu.setEnabled(false);
+                    JOptionPane.showMessageDialog(new JFrame(), "Salvato con successo!", "Istruzione eseguita correttamente", JOptionPane.PLAIN_MESSAGE);
+                }
+            }else{
+                JOptionPane.showMessageDialog(new JFrame(), "Non hai aperto alcuna tabella!", "Errore", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        json.addActionListener(actionEvent ->{
+            if(table.getTables().size() > 0){
+                JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home") + "/Desktop");
+                int rc = fileChooser.showSaveDialog(null);
+                if(rc == JFileChooser.APPROVE_OPTION){
+                    table.setPath(fileChooser.getSelectedFile());
+                    table.saveJSON();
                     editMenu.setEnabled(false);
                     tablesMenu.setEnabled(false);
                     fileSaveMenu.setEnabled(false);

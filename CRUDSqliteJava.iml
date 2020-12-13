@@ -11,5 +11,6 @@
     <orderEntry type="library" name="poi-examples-4.1.2" level="project" />
     <orderEntry type="library" name="barcodes-7.1.4-javadoc" level="project" />
     <orderEntry type="library" name="itextpdf-5.5.9" level="project" />
+    <orderEntry type="library" name="gson-2.2.4" level="project" />
   </component>
 </module>

@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -277,6 +279,37 @@ public class Table extends JTable {
         this.clear();
     }
 
+    public void saveJSON(){
+        ArrayList <String> jsonStrings = new ArrayList<>();
+        String jsonString = "";
+        try {
+            FileWriter file = new FileWriter(this.getPath());
+            file.append("{");
+        for(int row = 0; row < this.getRowCount(); row++){
+            file.append("\"" + row + "\":{");
+            jsonString = "";
+            for(int col = 0; col < this.getColumnCount(); col++){
+                if(col != this.getColumnCount()-1) {
+                    jsonString = jsonString.concat("\"" + this.getColumnName(col) + "\":\"" + this.getValueAt(row, col) + "\", ");
+                    System.out.println(jsonString);
+                }else{
+                    jsonString = jsonString.concat("\"" + this.getColumnName(col) + "\":\"" + this.getValueAt(row, col) + "\"");
+                    System.out.println(jsonString);
+                }
+            }
+            if (row != this.getRowCount()-1){
+                file.append(jsonString + "}, " );
+            }else{
+                file.append(jsonString + "}" );
+            }
+        }
+        file.append("}");
+        file.flush();
+        file.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public void createRecord(ArrayList<String> valueDB){
