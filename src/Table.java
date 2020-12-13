@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.nio.charset.StandardCharsets;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -195,8 +199,7 @@ public class Table extends JTable {
         try {
             FileOutputStream outputStream = new FileOutputStream(this.getPath());
             HSSFWorkbook workbook = new HSSFWorkbook();
-            for (String tables: this.getTables()){
-                HSSFSheet currentSheet = workbook.createSheet(tables);
+                HSSFSheet currentSheet = workbook.createSheet(this.getCurrentTableName());
 
                 Row firstRow = currentSheet.createRow(0);
                 for(int col = 0; col < this.getColumnCount(); col++){
@@ -209,7 +212,6 @@ public class Table extends JTable {
                         Cell cell = currentRow.createCell(col);
                         cell.setCellValue((String)this.getValueAt(row, col));
                     }
-                }
             }
             workbook.write(outputStream);
         } catch (IOException e) {
@@ -222,8 +224,7 @@ public class Table extends JTable {
         try {
             FileOutputStream outputStream = new FileOutputStream(this.getPath());
             XSSFWorkbook workbook = new XSSFWorkbook();
-            for (String tables: this.getTables()){
-                XSSFSheet currentSheet = workbook.createSheet(tables);
+                XSSFSheet currentSheet = workbook.createSheet(this.getCurrentTableName());
 
                 Row firstRow = currentSheet.createRow(0);
                 for(int col = 0; col < this.getColumnCount(); col++){
@@ -236,14 +237,46 @@ public class Table extends JTable {
                         Cell cell = currentRow.createCell(col);
                         cell.setCellValue((String)this.getValueAt(row, col));
                     }
-                }
             }
             workbook.write(outputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        this.clear();
     }
+
+    public void savePDF(){
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream(this.getPath()));
+            document.open();
+            document.addTitle(this.getCurrentTableName());
+            document.addSubject(this.getCurrentTableName());
+            document.addKeywords("Java, PDF, iText");
+            document.addAuthor(System.getProperty("user.name"));
+            document.addAuthor(System.getProperty("user.name"));
+
+            PdfPTable table = new PdfPTable(this.getColumnCount());
+
+            for(int col = 0; col < this.getColumnCount(); col++){
+                table.addCell(getColumnName(col));
+            }
+
+            for(int row = 0; row < this.getRowCount(); row++){
+                for(int col = 0; col < this.getColumnCount(); col++){
+                    table.addCell((String) getValueAt(row, col));
+                }
+            }
+            document.add(table);
+            document.close();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        this.clear();
+    }
+
 
 
     public void createRecord(ArrayList<String> valueDB){

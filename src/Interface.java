@@ -41,6 +41,8 @@ public class Interface extends JFrame {
         JMenuItem xls = new JMenuItem("XLS");
         //XLSX
         JMenuItem xlsx = new JMenuItem("XLSX");
+        //PDF
+        JMenuItem pdf = new JMenuItem("PDF");
 
 
 
@@ -69,6 +71,7 @@ public class Interface extends JFrame {
         fileSaveMenu.add(csv);
         fileSaveMenu.add(xls);
         fileSaveMenu.add(xlsx);
+        fileSaveMenu.add(pdf);
 
         fileMenu.add(fileSaveMenu);
 
@@ -192,6 +195,23 @@ public class Interface extends JFrame {
                 JOptionPane.showMessageDialog(new JFrame(), "Non hai aperto alcuna tabella!", "Errore", JOptionPane.ERROR_MESSAGE);
             }
         });
+        pdf.addActionListener(actionEvent ->{
+            if(table.getTables().size() > 0){
+                JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home") + "/Desktop");
+                int rc = fileChooser.showSaveDialog(null);
+                if(rc == JFileChooser.APPROVE_OPTION){
+                    table.setPath(fileChooser.getSelectedFile());
+                    table.savePDF();
+                    editMenu.setEnabled(false);
+                    tablesMenu.setEnabled(false);
+                    fileSaveMenu.setEnabled(false);
+                    JOptionPane.showMessageDialog(new JFrame(), "Salvato con successo!", "Istruzione eseguita correttamente", JOptionPane.PLAIN_MESSAGE);
+                }
+            }else{
+                JOptionPane.showMessageDialog(new JFrame(), "Non hai aperto alcuna tabella!", "Errore", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
 
         editCreate.addActionListener(actionEvent -> {
             ArrayList<String> inputData = new ArrayList<>();
